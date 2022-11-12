@@ -124,7 +124,25 @@ class Stats(commands.Cog):
         location = info["data"][0]['location']
         embed.add_field(name='Location', value=f"{location['city']}, {location['region']} {location['postcode']}", inline=True)
         await ctx.send(embed=embed)
-
+    
+    @commands.command(name='teams', help='Get teams from a specific location!')
+    async def teams(self, ctx, town):
+        info = (requests.get(self.endpoint + f'teams', headers=self.auth)).json()
+        if info["data"] == []:
+            return await ctx.send(self.notfound)
+        embed = discord.Embed(title=f'Teams from {town}', timestamp=datetime.utcnow(), color=0x00FF00)
+        town_teams = [x for x in info if info["data"][0]["location"]["city"].lower() == town.lower()]
+        if town_teams == []:
+            return await ctx.send(self.notfound)
+        index = len(events) - 1
+        embed.add_field(name='Team Name', value=town_teams["data"][0]['team_name'], inline=True)
+        embed.add_field(name='Grade', value=town_teams["data"][-1]["grade"], inline=True)
+        embed.add_field(name='Organization', value=town_teams["data"][0]['organization'], inline=False)
+        location = town["data"][0]['location']
+        embed.add_field(name='Location', value=f"{location['city']}, {location['region']} {location['postcode']}", inline=True)
+        arrows = Skills(index, town_teams, town, ctx.author)
+        await ctx.send(embed=embed, view=arrows)
+    
     @commands.command(name='skills', help='Get a team\'s skills stats!')
     async def skills(self, ctx, number):
         team = (requests.get(self.endpoint + f'teams?number%5B%5D={number.upper()}&myTeams=false', headers=self.auth)).json()
@@ -205,5 +223,5 @@ class Stats(commands.Cog):
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
 
-def setup(bot):
-    bot.add_cog(Stats(bot))
+async def setup(bot):
+    await bot.add_cog(Stats(bot))

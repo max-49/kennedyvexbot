@@ -65,7 +65,7 @@ class Skills(discord.ui.View):
         self.author = author
 
     @discord.ui.button(label='⬅️', style=discord.ButtonStyle.blurple)
-    async def left(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def left(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index -= 1
         if self.index < 0:
            self.index += 1
@@ -82,7 +82,7 @@ class Skills(discord.ui.View):
         await interaction.message.edit(embed=embed, view=self)
 
     @discord.ui.button(label='➡️', style=discord.ButtonStyle.blurple)
-    async def right(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def right(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index += 1
         if self.index > (len(self.events) - 1):
            self.index -= 1

@@ -21,11 +21,11 @@ async def on_message(ctx):
         print(f"({current_time}) {ctx.author.name}: {ctx.content}")
     await bot.process_commands(ctx)
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, discord.ext.commands.CommandNotFound):
-        not_found = str(error).split('"')[1]
-        await ctx.send(f"Command **`{not_found}`** not found.", allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
+# @bot.event
+# async def on_command_error(ctx, error):
+#     if isinstance(error, discord.ext.commands.CommandNotFound):
+#         not_found = str(error).split('"')[1]
+#         await ctx.send(f"Command **`{not_found}`** not found.", allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
 
 async def main():
     async with bot:

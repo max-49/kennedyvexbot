@@ -14,7 +14,7 @@ class Rank(discord.ui.View):
         self.author = author
 
     @discord.ui.button(label='⬅️', style=discord.ButtonStyle.blurple)
-    async def left(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def left(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index -= 1
         if self.index < 0:
            self.index += 1
@@ -32,7 +32,7 @@ class Rank(discord.ui.View):
         await interaction.message.edit(embed=embed, view=self)
 
     @discord.ui.button(label='➡️', style=discord.ButtonStyle.blurple)
-    async def right(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def right(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.index += 1
         if self.index > (len(self.events) - 1):
            self.index -= 1
@@ -49,7 +49,7 @@ class Rank(discord.ui.View):
         embed.add_field(name="Strength Points", value=self.events[self.index]["sp"], inline=True)   
         await interaction.message.edit(embed=embed, view=self)
     
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction):
         if interaction.user == self.author:
             return True
         else:
@@ -220,8 +220,8 @@ class Stats(commands.Cog):
         arrows = Rank(index, events, number, ctx.author)
         await ctx.send(embed=embed, view=arrows)
 
-    async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+    # async def cog_command_error(self, ctx, error):
+    #     await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
 
 async def setup(bot):
     await bot.add_cog(Stats(bot))
